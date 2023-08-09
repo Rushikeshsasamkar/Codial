@@ -1,34 +1,7 @@
-body{
-    /* margin: 0; */
-    
+body {
+  margin: 0;
+  /* text-align: center; */
 }
-/* Reset some default styles and provide basic styling */
-#control-nav {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background-color:blue;
-    color: white;
-    font-family: Arial, sans-serif;
-}
-
-#control-nav ul {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px 0;
-}
-
-#control-nav li {
-    margin: 0 10px;
-}
-
-#control-nav a {
-    text-decoration: none;
-    color: white;
-    transition: color 0.3s;
-}
-
-#control-nav a:hover {
-    color: lightgray;
+body #layout-main {
+  height: 100%;
 }
