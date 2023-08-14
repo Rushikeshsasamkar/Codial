@@ -14,6 +14,14 @@
                     let newPost =  newPostDom(data.data.post);  
                     $('#posts-list-container>ul').prepend(newPost);
                     deletePost($('.delete-post-button', newPost));
+                  
+                    new Noty({
+                        theme: "relax",
+                        text: "Post published!",
+                        type: "success",
+                        layout: "topRight",
+                        timeout: 1500,
+                      }).show();
                 },error:function(error){
                     console.log(error.resposeText);
                 }
@@ -27,25 +35,25 @@
                 <p> 
                     
                     <small>
-                        <a class="delete-post-button" href="/posts/destroy/${ post._id }">X</a>
+                        <a class="delete-post-button" href="/posts/destroy/${post._id}">X</a>
                     </small>
                     
-                    ${ post.content }
-                    <small style="align-items: right;">
-                            <br>:- ${ post.user.name }
+                    ${post.content}
+                    <small id="post-author">
+                            <br>:- ${post.user.name}
                     </small>
                 </p>
                 <div class="post-comments">
                     
                         <form action="/comments/create" method="post">
                                 <input type="text" name="content" placeholder="add comment..." required>
-                                <input type="hidden" name="post"value=" ${ post._id }">
+                                <input type="hidden" name="post"value=" ${post._id}">
                                 <input type="submit" value="Add Comment">
                         </form>
                    
                 
                     <div class="post-comments-list">
-                        <ul id="post-comments-${ post._id }">
+                        <ul id="post-comments-${post._id}">
                             
 
                         </ul>
@@ -66,6 +74,14 @@
                 success: function(data){
                     $(`#post-${data.data.post_id}`).remove();
 
+                    new Noty({
+                        theme: "relax",
+                        text: "Post Deleted",
+                        type: "success",
+                        layout: "topRight",
+                        timeout: 1500,
+                      }).show();
+
                 },error:function(error){
                     console.log(error.resposeText);
                 }
@@ -73,8 +89,21 @@
         })
     }
 
-
-
-
+    let convertPostsToAjax = function () {
+        console.log("ajax");
+        $("#posts-list-container>div").each(function () {
+          let self = $(this);
+          console.log(self);
+          let deleteButton = $(" .delete-post-button", self);
+          console.log(deleteButton);
+          deletePost(deleteButton);
+    
+          // get the post's id by splitting the id attribute
+          let postId = self.prop("id").split("-")[1];
+          new PostComments(postId);
+        });
+      };
+    
     createPost();
+    convertPostsToAjax();
 }
