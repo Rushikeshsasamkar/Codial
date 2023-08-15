@@ -63,7 +63,7 @@ codial
 ├─ public
 │  ├─ assets
 │  │  ├─ css
-│  │  │  ├─ chat_box-3aa9f1fb21.css
+│  │  │  ├─ chat_box-3aa9f1db21.css
 │  │  │  ├─ footer-80b8801692.css
 │  │  │  ├─ header-5624c7deef.css
 │  │  │  ├─ home-bacaa64d3a.css
