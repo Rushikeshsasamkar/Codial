@@ -1,9 +1,11 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
+const env = require('./config/environment');
 const port = 8000;
 const expressLayouts = require('express-ejs-layouts');
 const db = require('./config/mongoose');
+const logger = require('morgan');
 // used for session cookie
 const session = require('express-session');
 const passport = require('passport');
@@ -13,16 +15,35 @@ const passportGoogle = require('./config/passport-google-oauth2-strategy');
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 const customMware = require('./config/middleware');
+const cors = require('cors');
+require('dotenv').config();
 
 
 
+// setup the chat server to be used with socket.io
+const chatServer = require('http').Server(app);
+const chatSockets = require('./config/chat_sockets').chatSockets(chatServer);
+// app.use(cors());
+chatServer.listen(5000);
+console.log('chat server is listening on port 5000');
+const path = require('path');
+
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8000'); // Replace with your frontend URL
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+  });
 app.use(express.urlencoded());
 
 app.use(cookieParser());
 //make the uploads path available to the browser
 
-app.use(express.static('./assets'));
+app.use(express.static(env.asset_path));
 app.use('/uploads', express.static(__dirname + '/uploads'));
+
+app.use(logger(env.morgan.mode, env.morgan.options));
 
 app.use(expressLayouts);
 // extract style and scripts from sub pages into the layout
@@ -40,7 +61,7 @@ app.set('views', './views');
 app.use(session({
     name: 'codeial',
     // TODO change the secret before deployment in production mode
-    secret: 'blahsomething',
+    secret: env.session_cookie_key,
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -77,3 +98,6 @@ app.listen(port, function(err){
 
     console.log(`Server is running on port: ${port}`);
 });
+
+console.log("Accessing the enviroment variable: "+process.env.CODEIAL_ASSET_PATH);
+
